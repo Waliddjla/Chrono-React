@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useReducer} from 'react'
 import './Chrono.css'
 import PauseImg from '../Images/pause.svg'
 import PlayImg from '../Images/play.svg'
@@ -14,7 +14,44 @@ export default function Chrono() {
     const[breakTime, setbreakTime] = useState(300);
     const[breakFixed, setbreakFixed] = useState(300);
 
-    const[workingChrno, setworkingChrono]= useState(false);
+    const[workingChrno, setworkingChrono]= useState(false); 
+
+    const[state, dispatch] = useReducer(reducer);
+
+    function reducer(state, action) {
+        switch (action.type) {
+            case 'TICK':
+                if (sessionTime >= 0) {
+                    setsessionTime(sessionTime - 1)
+                }else if(breakTime >= 1) {
+                    setbreakTime(breakTime - 1)
+                }else if(breakTime <= 0 && breakTime <= 0) {
+                    setsessionTime(sessionFixed)
+                    setbreakTime(breakFixed)
+                } 
+                
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    useEffect(() => {
+        let id; 
+        if(workingChrno){
+            id= window.setInterval(() => {
+              dispatch({type: 'TICK'})
+            }, 1000)
+        }
+        return () => {
+            window.clearInterval(id)
+        }
+    }, [workingChrno])
+
+    const playpause = () => {
+        setworkingChrono(!workingChrno)
+    }
 
   return (
     <div className='container-chrono'>
@@ -31,10 +68,16 @@ export default function Chrono() {
             </div>
         </div>
         <h1>
-            <span>chrono</span>
+            {sessionTime >= 0 ? (
+                <span>
+                    {`${Math.trunc(sessionTime / 60)} : ${sessionTime % 60 < 10 ? `0${sessionTime % 60}`: `${sessionTime % 60}`}`}
+                </span>
+            ) : ""}
+
         </h1>
         <div className="container-controllers">
-            <button>
+            <button 
+            onClick={playpause}>
                 <img src={workingChrno? PauseImg: PlayImg }/>
             </button>
             <button>
