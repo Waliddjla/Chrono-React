@@ -53,18 +53,60 @@ export default function Chrono() {
         setworkingChrono(!workingChrno)
     }
 
+    const handelsession = (e) => {
+        const el = e.target;
+        if(el.classList.contains('minus')) {
+            if (sessionTime / 60 > 1) {
+                setsessionTime(sessionTime - 60)
+                setsessionFixed(sessionFixed - 60)
+                
+            }
+        }else if (el.classList.contains('plus')) {
+            
+                setsessionTime(sessionTime + 60)
+                setsessionFixed(sessionFixed + 60)
+            
+        }
+
+    }
+    const handelbreak = (e) => {
+        const el = e.target;
+        if(el.classList.contains('minus')) {
+            if (breakTime / 60 > 1) {
+                setbreakTime(breakTime - 60)
+                setbreakFixed(breakFixed - 60)
+                
+            }
+        }else if (el.classList.contains('plus')) {
+            setbreakTime(breakTime + 60)
+                setbreakFixed(breakFixed + 60)
+            
+        }
+    }
+    const restFunc = () => {
+        if (workingChrno) { 
+            setworkingChrono(!workingChrno)
+        }
+        setsessionTime(sessionFixed)
+        setbreakTime(breakFixed)
+    }
+
   return (
-    <div className='container-chrono'>
+    <div className={workingChrno ? 'container-chrono anim-glow' : 'container-chrono' }>
         <div className="container-config">
             <div className="box-btns session">
-                <button className='minus'>-</button>
+                <button onClick={handelsession}
+                className='minus'>-</button>
                 <span>{sessionFixed / 60}</span>
-                <button className='plus'>+</button>
+                <button onClick={handelsession}
+                className='plus'>+</button>
             </div>
             <div className="box-btns break">
-                <button className='minus'>-</button>
+                <button onClick={handelbreak}
+                className='minus'>-</button>
                 <span>{breakFixed / 60}</span>
-                <button className='plus'>+</button>
+                <button onClick={handelbreak}
+                className='plus'>+</button>
             </div>
         </div>
         <h1>
@@ -72,7 +114,11 @@ export default function Chrono() {
                 <span>
                     {`${Math.trunc(sessionTime / 60)} : ${sessionTime % 60 < 10 ? `0${sessionTime % 60}`: `${sessionTime % 60}`}`}
                 </span>
-            ) : ""}
+            ) : 
+            <span>
+                {`${Math.trunc(breakTime / 60)} : ${breakTime % 60 < 10 ? `0${breakTime % 60}`: `${breakTime % 60}`}`}
+            </span>
+            }
 
         </h1>
         <div className="container-controllers">
@@ -80,7 +126,7 @@ export default function Chrono() {
             onClick={playpause}>
                 <img src={workingChrno? PauseImg: PlayImg }/>
             </button>
-            <button>
+            <button onClick={restFunc}>
                 <img src={ResetImg}/>
             </button>
         </div>
